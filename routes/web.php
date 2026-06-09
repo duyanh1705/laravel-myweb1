@@ -24,18 +24,8 @@ Route::get('/demo4/{id}', [DemoController::class, 'index4']);
 Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
 Route::get('/demo6/{param1}/{param2}', [DemoController::class, 'index6']);
 
-Route::prefix('admin')->group(function () {
-
-    Route::resource('category', CategoryController::class);
-
-    Route::resource('brand', BrandController::class);
-
-    Route::resource('product', ProductController::class);
-
-    Route::resource('user', UserController::class);
-
-    Route::resource('post', PostController::class);
-
+Route::prefix('admin')->name('admin.')->group(function () {
+Route::resource('categories', CategoryController::class);
 });
 
 Route::get('/admin/dashboard', function () {
@@ -44,3 +34,7 @@ Route::get('/admin/dashboard', function () {
 
 Route::get('/test1', [ProductController::class, 'test1']);
 Route::get('/test2', [ProductController::class, 'test2']);
+
+Route::resource('admin/brands', BrandController::class)->names('admin.brands');
+Route::resource('admin/users', UserController::class)->names('admin.users');
+

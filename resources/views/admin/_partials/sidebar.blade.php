@@ -25,13 +25,23 @@
             <div class="collapse" id="categoryMenu">
                 <ul class="nav flex-column ms-3">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">
-                            Danh sách loại sản phẩm
+                        <a class="nav-link text-white" href="{{ route('admin.categories.index') }}">
+                             Loại sản phẩm
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             Thêm loại sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('admin.brands.index') }}">
+                            Thương hiệu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('admin.users.index') }}">
+                            Người dùng
                         </a>
                     </li>
                 </ul>

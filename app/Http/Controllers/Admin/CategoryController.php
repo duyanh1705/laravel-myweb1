@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -13,7 +14,13 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        return "Danh sách sản phẩm";
+        $list = DB::table('categories')
+        ->select('cateid','catename','slug','image','status')
+        ->where('status',1)
+        ->orderBy('catename')
+        ->get();
+
+        return view('admin.categories.index', compact('list'));
     }
 
     /**
