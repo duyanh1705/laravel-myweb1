@@ -37,4 +37,10 @@ Route::get('/test2', [ProductController::class, 'test2']);
 
 Route::resource('admin/brands', BrandController::class)->names('admin.brands');
 Route::resource('admin/users', UserController::class)->names('admin.users');
+Route::resource('admin/products', ProductController::class)->names('admin.products');
+Route::resource('admin/posts', PostController::class)->names('admin.posts');
+
+Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+Route::get('/admin/categories/store', [CategoryController::class, 'store'])->name('admin.categories.store');
+Route::delete('/admin/categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 

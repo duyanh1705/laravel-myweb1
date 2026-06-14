@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function create()
     {
         //
-        return "Thêm mới sản phẩm";
+        return view('admin.categories.create');
     }
 
     /**
@@ -38,7 +38,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
-        return "Lưu sản phẩm mới";
+        DB::table('categories')->insert([
+            'catename' => $request->catename,
+            'slug' => $request->slug,
+        ]);
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -74,6 +78,9 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         //
-        return "Xóa sản phẩm có id = " . $id;
+        DB::table('categories')
+        ->where('cateid','=', $id)
+        ->delete();
+        return redirect()->route('admin.categories.index');
     }
 }

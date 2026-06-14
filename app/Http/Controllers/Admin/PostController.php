@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -13,7 +14,23 @@ class PostController extends Controller
     public function index()
     {
         //
-        return "Bài viết";
+$list = DB::table('posts')
+            ->join('users', function($join) {
+                $join->on('posts.user_id', '=', 'users.id');
+            })
+            ->select(
+                'posts.id',
+                'posts.title',
+                'posts.image',
+                'posts.status',
+                // Sửa thành users.fullname (hoặc users.username tùy bạn muốn hiển thị tên nào)
+                'users.fullname as username' 
+            )
+            ->orderBy('posts.id', 'desc')
+            ->get();
+
+        // Trả dữ liệu về đúng view danh sách bài viết
+        return view('admin.posts.index', compact('list'));
     }
 
     /**

@@ -4,18 +4,15 @@
         Admin
     </h4>
     <ul class="nav flex-column">
+        {{-- 1. Dashboard --}}
         <li class="nav-item">
             <a class="nav-link text-white" href="{{ route('admin.home') }}">
                 <i class="bi bi-house-door"></i>
                 Dashboard
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-white" href="/admin/dashboard">
-                <i class="bi bi-house-door"></i>Dashboard***
-            </a>
-        </li>
-        {{-- Menu expand --}}
+
+        {{-- 2. Khối Quản lý danh mục (Menu cha con) --}}
         <li class="nav-item">
             <a class="nav-link text-white" data-bs-toggle="collapse" href="#categoryMenu">
                 <i class="bi bi-tags"></i>
@@ -47,10 +44,20 @@
                 </ul>
             </div>
         </li>
+
+        {{-- 3. Quản lý Sản phẩm --}}
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">
+            <a class="nav-link text-white" href="{{ route('admin.products.index') }}">
                 <i class="bi bi-box-seam"></i>
                 Sản phẩm
+            </a>
+        </li>
+
+        {{-- 4. Quản lý Bài viết (Đặt ở vị trí này là chuẩn nhất) --}}
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ route('admin.posts.index') }}">
+                <i class="bi bi-journal-text"></i>
+                Bài viết
             </a>
         </li>
     </ul>

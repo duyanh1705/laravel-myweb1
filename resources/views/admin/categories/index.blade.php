@@ -2,6 +2,9 @@
 @section('title', 'Loại sản phẩm')
 @section('content')
 <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
+<a href="{{ route('admin.categories.create') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> + Thêm mới
+    </a>
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -23,6 +26,15 @@
                 @else
                 <span class="badge bg-danger">Ẩn</span>
                 @endif
+            </td>
+            <td>
+                <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Xóa
+                    </button>
+                </form>
             </td>
         </tr>
         @endforeach
