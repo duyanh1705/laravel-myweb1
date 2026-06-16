@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
-    use HasFactory;
-
     protected $table = 'brands';
+
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'brandname',
+        'slug',
+        'image',
+        'status',
+        'sort_order',
+        'description'
+    ];
 }

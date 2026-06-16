@@ -9,6 +9,7 @@
             <th>Ảnh đại diện</th>
             <th>ID</th>
             <th>Họ tên</th>
+            <th>Tên tài khoản</th>
             <th>Email</th>
             <th>Trạng thái</th>
         </tr>
@@ -35,4 +36,7 @@
         @endforeach
     </tbody>
 </table>
+<div class="mt-4 d-flex justify-content-center">
+    {{ $list->links('vendor.pagination.bootstrap-5') }}
+</div>
 @endsection

@@ -35,4 +35,7 @@
         @endforeach
     </tbody>
 </table>
+<div class="mt-4 d-flex justify-content-center">
+    {{ $list->links('vendor.pagination.bootstrap-5') }}
+</div>
 @endsection

@@ -1,10 +1,14 @@
 @extends('admin.layouts.admin')
 @section('title', 'Loại sản phẩm')
 @section('content')
-<h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
-<a href="{{ route('admin.categories.create') }}" class="btn btn-success">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">DANH SÁCH LOẠI SẢN PHẨM</h2>
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-success">
         <i class="bi bi-plus-circle"></i> + Thêm mới
     </a>
+</div>
+
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -12,7 +16,7 @@
             <th>Tên loại</th>
             <th>Slug</th>
             <th>Trạng thái</th>
-        </tr>
+            <th width="10%">Chức năng</th> </tr>
     </thead>
     <tbody>
         @foreach($list as $item)
@@ -40,4 +44,8 @@
         @endforeach
     </tbody>
 </table>
+
+<div class="mt-4 d-flex justify-content-center">
+    {{ $list->links('vendor.pagination.bootstrap-5') }}
+</div>
 @endsection
