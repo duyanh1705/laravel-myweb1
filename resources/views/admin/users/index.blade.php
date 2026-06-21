@@ -1,9 +1,14 @@
 @extends('admin.layouts.admin')
 @section('title', 'Người dùng')
 @section('content')
-<h2 class="mb-3">DANH SÁCH NGƯỜI DÙNG</h2>
-<table class="table table-bordered table-hover table-striped">
-    <thead class="table-dark">
+    <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+        <h2 class="mb-0">DANH SÁCH NGƯỜI DÙNG</h2>
+        <a href="{{ route('admin.users.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> + Thêm mới
+        </a>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="table-dark">
         <tr>
             <th>STT</th>
             <th>Ảnh đại diện</th>

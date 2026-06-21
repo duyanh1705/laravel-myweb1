@@ -30,7 +30,7 @@ class BrandController extends Controller
     public function create()
     {
         //
-        return "Thêm thương hiệu";
+        return view('admin.brands.create');
     }
 
     /**
@@ -39,7 +39,15 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         //
-        return "Lưu thương hiệu";
+        Brand::create([
+            'brandname' => $request->brandname,
+            'slug' => $request->slug,
+            'image' => $request->image,
+            'status' => $request->status ?? 1,
+            'sort_order' =>$request->sort_order ?? 0,
+            'description' =>$request->description,
+        ]);
+        return redirect()->route('admin.brands.index')->with('success', 'Thêm thương hiệu thành công!');
     }
 
     /**

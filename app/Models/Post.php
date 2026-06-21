@@ -5,19 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Brand extends Model
+class Post extends Model
 {
+    //
     use HasFactory;
-    protected $table = 'brands';
-
+    protected $table ='posts';
     protected $primaryKey = 'id';
-
     protected $fillable = [
-        'brandname',
+        'title',
         'slug',
+        'content',
         'image',
         'status',
-        'sort_order',
-        'description'
+        'user_id'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

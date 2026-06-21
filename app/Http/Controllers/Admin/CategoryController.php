@@ -43,11 +43,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
-        DB::table('categories')->insert([
+        // DB::table('categories')->insert([
+        //     'catename' => $request->catename,
+        //     'slug' => $request->slug,
+        // ]);
+        Category::create([
             'catename' => $request->catename,
             'slug' => $request->slug,
+            'description' => $request->description,
+            'image' => $request->image,
+            'status' => $request->status ?? 1,
         ]);
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success', 'Thêm loại sản phẩm thành công');
     }
 
     /**
