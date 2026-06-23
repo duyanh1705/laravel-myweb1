@@ -9,6 +9,15 @@
 {{-- (tương ứng với @yield('content') trong layout --}}
 @section('content')
     <h2 class="mb-3">DANH SÁCH SẢN PHẨM</h2>
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-2">
+        <i class="bi bi-plus-circle"></i>
+        Thêm mới
+    </a>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
     <table class="table table-bordered table-hover">
         <thead>
             <tr>

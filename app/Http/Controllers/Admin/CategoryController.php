@@ -47,15 +47,27 @@ class CategoryController extends Controller
         //     'catename' => $request->catename,
         //     'slug' => $request->slug,
         // ]);
+        try {
+            if(empty($request->catename)) {
+                return back()
+                ->withInput()
+                ->with('error', 'Vui lòng nhập tên loại sản phẩm');
+            }
+
         Category::create([
             'catename' => $request->catename,
             'slug' => $request->slug,
             'description' => $request->description,
             'image' => $request->image,
-            'status' => $request->status ?? 1,
+            'status' => $request->status,
         ]);
         return redirect()->route('admin.categories.index')->with('success', 'Thêm loại sản phẩm thành công');
+    }catch (\Exception $e){
+        return back()
+        ->withInput()
+        ->with('error', $e->getMessage());
     }
+}
 
     /**
      * Display the specified resource.
@@ -72,7 +84,13 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         //
-        return "Sửa sản phẩm có id = " . $id;
+        $category = Category::find($id);
+        if(!$category) {
+            return redirect()
+            ->route('admin.categories.index')
+            ->with('error', 'Loại sản phẩm không tồn tại');
+        }
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -81,9 +99,38 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         //
-        return "Cập nhật sản phẩm có id = " . $id;
-    }
+        try {
+            
+            if (empty($request->catename)) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Vui lòng nhập tên loại sản phẩm');
+            }
 
+            $category = Category::find($id);
+            if (!$category) {
+                return redirect()
+                    ->route('admin.categories.index')
+                    ->with('error', 'Loại sản phẩm không tồn tại');
+            }
+
+            $category->update([
+                'catename'    => $request->catename,
+                'slug'        => $request->slug,
+                'status'      => $request->status,
+                'description' => $request->description
+            ]);
+
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Cập nhật loại sản phẩm thành công');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
