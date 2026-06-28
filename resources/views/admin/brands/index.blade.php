@@ -23,27 +23,43 @@
                 <th>Tên thương hiệu</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
+                <th>Thao tác</th>
+
             </tr>
         </thead>
         <tbody>
-            @foreach($list as $index => $item)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>
-                    <img src="{{ $item->image ? asset('images/' . $item->image) : asset('images/default.png') }}" 
-                         width="50" height="50" style="object-fit:cover">
-                </td>
-                <td>{{ $item->id }}</td>
-                <td>{{ $item->brandname }}</td>
-                <td>{{ $item->slug }}</td>
-                <td>
-                    @if($item->status == 1)
-                    <span class="badge bg-success">Hiển thị</span>
-                    @else
-                    <span class="badge bg-danger">Ẩn</span>
-                    @endif
-                </td>
-            </tr>
+            @foreach ($list as $index => $item)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>
+                        <img src="{{ $item->image ? asset('images/' . $item->image) : asset('images/default.png') }}"
+                            width="50" height="50" style="object-fit:cover">
+                    </td>
+                    <td>{{ $item->id }}</td>
+                    <td>{{ $item->brandname }}</td>
+                    <td>{{ $item->slug }}</td>
+                    <td>
+                        @if ($item->status == 1)
+                            <span class="badge bg-success">Hiển thị</span>
+                        @else
+                            <span class="badge bg-danger">Ẩn</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('admin.brands.edit', $item->id) }}" class="btn btn-warning btn-sm text-white">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <form action="{{ route('admin.brands.destroy', $item->id) }}" method="POST"
+                            onsubmit="return confirm('Bạn có chắc muốn xóa thương hiệu này?')" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -51,5 +67,5 @@
     <div class="mt-4 d-flex justify-content-center">
         {{ $list->links('vendor.pagination.bootstrap-5') }}
     </div>
-    
+
 @endsection

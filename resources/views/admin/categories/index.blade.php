@@ -9,6 +9,12 @@
     </a>
 </div>
 
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ session('success') }}
+</div>
+@endif
+
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -16,7 +22,7 @@
             <th>Tên loại</th>
             <th>Slug</th>
             <th>Trạng thái</th>
-            <th width="10%">Chức năng</th> </tr>
+            <th width="15%">Thao tác</th> </tr>
     </thead>
     <tbody>
         @foreach($list as $item)
@@ -31,15 +37,19 @@
                 <span class="badge bg-danger">Ẩn</span>
                 @endif
             </td>
-            <td>
-                <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i> Xóa
-                    </button>
-                </form>
-            </td>
+<td class="text-center">
+    <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm text-white">
+        <i class="bi bi-pencil-square"></i>
+    </a>
+
+    <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');" class="d-inline">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger btn-sm">
+            <i class="bi bi-trash"></i>
+        </button>
+    </form>
+</td>
         </tr>
         @endforeach
     </tbody>
