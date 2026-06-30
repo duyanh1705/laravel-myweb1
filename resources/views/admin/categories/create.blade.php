@@ -4,7 +4,16 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">THÊM LOẠI SẢN PHẨM MỚI</h4>
+        <h4 class="mb-0">THÊM LOẠI SẢN PHẨM</h4>
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error )
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
     </div>
     <div class="card-body">
         
@@ -16,17 +25,26 @@
 
         <form action="{{ route('admin.categories.store') }}" method="POST">
             @csrf 
-
             <div class="mb-3">
                 <label for="catename" class="form-label font-weight-bold">Tên loại sản phẩm</label>
                 <input type="text" name="catename" id="catename" class="form-control" 
                 value="{{ old('catename') }}" placeholder="Nhập tên loại sản phẩm..." required>
+                @error('catename')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label for="slug" class="form-label font-weight-bold">Slug</label>
                 <input type="text" name="slug" id="slug" class="form-control" 
                 value="{{ old('slug') }}" placeholder="Ví dụ: ao-thun-nam..." required>
+                @error('slug')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+                @enderror
             </div>
 
             <div class="mb-3">
@@ -36,6 +54,11 @@
 
                 <input type="radio" class="btn-check" name="status" id="inactive" value="0" {{ old('status', 1) == 0 ? 'checked' : '' }}>
                 <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
+                @error('status')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+                @enderror
             </div>
 
             <div class="mb-3">

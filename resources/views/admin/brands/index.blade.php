@@ -13,6 +13,12 @@
             <i class="bi bi-plus-circle"></i> + Thêm mới
         </a>
     </div>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
 
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 class BrandController extends Controller
 {
     /**
@@ -32,32 +34,22 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
         try {
-            // Kiểm tra rỗng Tên thương hiệu giống check rỗng bên Product
-            if (empty($request->brandname)) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Vui lòng nhập tên thương hiệu');
-            }
-
-            // Lưu dữ liệu khớp 100% với các trường trong $fillable của Model
             Brand::create([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
-                'image'       => $request->image,
                 'status'      => $request->status,
-                'sort_order'  => $request->sort_order ?? 0, // Nếu rỗng thì mặc định là 0
                 'description' => $request->description,
             ]);
 
             return redirect()
                 ->route('admin.brands.index')
-                ->with('success', 'Thêm thương hiệu thành công');
-
+                ->with('success', 'Thêm thành công');
         } catch (\Exception $e) {
-            return back()
+            return redirect()
+                ->back()
                 ->withInput()
                 ->with('error', $e->getMessage());
         }
@@ -91,39 +83,24 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BrandRequest $request, string $id)
     {
         try {
-            // Kiểm tra rỗng Tên thương hiệu khi cập nhật
-            if (empty($request->brandname)) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Vui lòng nhập tên thương hiệu');
-            }
+            $brand = Brand::findOrFail($id);
 
-            $brand = Brand::find($id);
-            if (!$brand) {
-                return redirect()
-                    ->route('admin.brands.index')
-                    ->with('error', 'Thương hiệu không tồn tại');
-            }
-
-            // Cập nhật đầy đủ dữ liệu mới từ form sửa thương hiệu
             $brand->update([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
-                'image'       => $request->image,
                 'status'      => $request->status,
-                'sort_order'  => $request->sort_order ?? 0,
                 'description' => $request->description,
             ]);
 
             return redirect()
                 ->route('admin.brands.index')
                 ->with('success', 'Cập nhật thương hiệu thành công');
-
         } catch (\Exception $e) {
-            return back()
+            return redirect()
+                ->back()
                 ->withInput()
                 ->with('error', $e->getMessage());
         }
@@ -146,7 +123,6 @@ class BrandController extends Controller
             return redirect()
                 ->route('admin.brands.index')
                 ->with('success', 'Xóa thương hiệu thành công');
-
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.brands.index')
