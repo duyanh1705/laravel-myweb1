@@ -1,11 +1,24 @@
 @extends('admin.layouts.admin')
-@section('title', 'Loại sản phẩm')
+@section('title', 'Thêm sản phẩm')
 @section('content')
 <div class="border rounded bg-white p-4 shadow-sm">
     <h3 class="mb-4">Thêm sản phẩm</h3>
     
+    <x-admin.alert />
+    @if ($errors->any())
+        <div class="alert alert-danger mb-4">
+            <h6 class="fw-bold"></h6>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Khối hiển thị thông báo lỗi hệ thống phát sinh từ khối catch -->
     @if (session('error'))
-    <div class="alert alert-danger">
+    <div class="alert alert-danger mb-4">
         {{ session('error') }}
     </div>
     @endif
@@ -14,18 +27,29 @@
         @csrf
         <div class="row">
             <div class="col-md-6">
+                <!-- Tên sản phẩm -->
                 <div class="mb-3">
-                    <label class="form-label">Tên sản phẩm</label>
+                    <label class="form-label font-weight-bold">Tên sản phẩm</label>
                     <input type="text" name="productname" class="form-control"
                     value="{{ old('productname') }}" required>
+                    @error('productname')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
+                <!-- Slug -->
                 <div class="mb-3">
-                    <label class="form-label">Slug</label>
+                    <label class="form-label font-weight-bold">Slug</label>
                     <input type="text" name="slug" class="form-control"
                     value="{{ old('slug') }}" required>
+                    @error('slug')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
+                <!-- Loại sản phẩm -->
                 <div class="mb-3">
-                    <label class="form-label">Loại sản phẩm</label>
+                    <label class="form-label font-weight-bold">Loại sản phẩm</label>
                     <select name="cateid" class="form-select">
                         <option value="">--Chọn loại sản phẩm--</option>
                         @foreach ($categories as $category)
@@ -35,9 +59,14 @@
                         </option>
                         @endforeach
                     </select>
+                    @error('cateid')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
+                <!-- Thương hiệu -->
                 <div class="mb-3">
-                    <label class="form-label">Thương hiệu</label>
+                    <label class="form-label font-weight-bold">Thương hiệu</label>
                     <select name="brandid" class="form-select">
                         <option value="">--Chọn thương hiệu--</option>
                         @foreach ($brands as $brand )
@@ -47,21 +76,36 @@
                         </option>
                         @endforeach
                     </select>
+                    @error('brandid')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
+
             <div class="col-md-6">
+                <!-- Giá gốc -->
                 <div class="mb-3">
-                    <label class="form-label">Giá</label>
+                    <label class="form-label font-weight-bold">Giá</label>
                     <input type="number" name="price" class="form-control"
                     value="{{ old('price') }}" required>
+                    @error('price')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
+                <!-- Giá khuyến mãi -->
                 <div class="mb-3">
-                    <label class="form-label">Giá khuyến mãi</label>
+                    <label class="form-label font-weight-bold">Giá khuyến mãi</label>
                     <input type="number" name="pricediscount" class="form-control"
                     value="{{ old('pricediscount', 0) }}">
+                    @error('pricediscount')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
+                <!-- Trạng thái -->
                 <div class="mb-3">
-                    <label class="form-label d-block">Trạng thái</label>
+                    <label class="form-label d-block font-weight-bold">Trạng thái</label>
 
                     <input type="radio" class="btn-check" name="status" id="active" value="1"
                     {{ old('status', 1) == 1 ? 'checked' : ''}}>
@@ -74,16 +118,24 @@
                     <label class="btn btn-outline-danger" for="inactive">
                         Ẩn
                     </label>
+                    @error('status')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
+                <!-- Mô tả sản phẩm -->
                 <div class="mb-3">
-                    <label class="form-label">Mô tả sản phẩm</label>
+                    <label class="form-label font-weight-bold">Mô tả sản phẩm</label>
                     <textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
+                    @error('description')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
         </div>
+        
         <button type="submit" class="btn btn-primary">
-            Lưu sản phẩm
+            Lưu
         </button>
         <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
             Quay lại

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,6 @@ class PostController extends Controller
      */
     public function index($limit = 10)
     {
-        // Sử dụng eager loading 'with' gọi quan hệ user để lấy tên tác giả giống trang Product của bạn
         $list = Post::with(['user:id,fullname'])
             ->select('id', 'title', 'slug', 'image', 'status', 'user_id', 'created_at')
             ->orderBy('title')
@@ -35,15 +35,10 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         try {
-            // Kiểm tra rỗng Tiêu đề bài viết giống check rỗng cateid bên Product
-            if (empty($request->title)) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Vui lòng nhập tiêu đề bài viết');
-            }
+            // ✨ Đã dọn dẹp các lệnh kiểm tra empty() thủ công cũ vì dữ liệu đã được chặn từ vòng ngoài
 
             Post::create([
                 'title'       => $request->title,
@@ -79,7 +74,6 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        // Tìm bài viết theo ID khóa chính 'id'
         $post = Post::find($id);
 
         if (!$post) {
@@ -94,24 +88,13 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PostRequest $request, string $id)
     {
         try {
-            // Kiểm tra rỗng Tiêu đề khi cập nhật
-            if (empty($request->title)) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Vui lòng nhập tiêu đề bài viết');
-            }
+            // ✨ Đã dọn dẹp các lệnh kiểm tra empty() thủ công cũ
 
-            $post = Post::find($id);
-            if (!$post) {
-                return redirect()
-                    ->route('admin.posts.index')
-                    ->with('error', 'Bài viết không tồn tại');
-            }
+            $post = Post::findOrFail($id);
 
-            // ĐÃ SỬA: Thay $request->content bằng $request->input('content') để hết lỗi trùng biến hệ thống
             $post->update([
                 'title'       => $request->title,
                 'slug'        => $request->slug,

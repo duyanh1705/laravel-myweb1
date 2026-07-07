@@ -13,6 +13,11 @@
             <i class="bi bi-plus-circle"></i> + Thêm mới
         </a>
     </div>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <table class="table table-bordered table-hover">
         <thead>
@@ -30,22 +35,22 @@
             @forelse($list as $item)
                 <tr>
                     <td>{{ $list->firstItem() + $loop->index }}</td>
-<td>
-    {{-- Nếu là link mạng (chứa http) thì lấy luôn link đó, ngược lại mới nối thư mục images/ --}}
-    <img src="{{ Str::contains($item->image, 'http') ? $item->image : asset('images/' . ($item->image ?? 'default.png')) }}" 
-         width="50" height="50" style="object-fit:cover" class="img-thumbnail"
-         onerror="this.onerror=null; this.src='{{ asset('images/default.png') }}';">
-</td>
+                    <td>
+                        {{-- Nếu là link mạng (chứa http) thì lấy luôn link đó, ngược lại mới nối thư mục images/ --}}
+                        <img src="{{ Str::contains($item->image, 'http') ? $item->image : asset('images/' . ($item->image ?? 'default.png')) }}"
+                            width="50" height="50" style="object-fit:cover" class="img-thumbnail"
+                            onerror="this.onerror=null; this.src='{{ asset('images/default.png') }}';">
+                    </td>
                     <td>{{ $item->title }}</td>
-                    
+
                     {{-- Gọi qua quan hệ user và lấy cột fullname đúng như Model User của bạn --}}
                     <td>{{ $item->user?->fullname }}</td>
-                    
+
                     {{-- Hiển thị ngày tạo bài viết --}}
                     <td>{{ $item->created_at?->format('d/m/Y') }}</td>
-                    
+
                     <td>
-                        @if($item->status)
+                        @if ($item->status)
                             <span class="badge bg-success">Hiện</span>
                         @else
                             <span class="badge bg-danger">Ẩn</span>
@@ -56,7 +61,7 @@
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="{{ route('admin.posts.destroy', $item->id) }}" class="btn btn-danger btn-sm"
-                           onclick="return confirm('Bạn có chắc muốn xóa bài viết này?')">
+                            onclick="return confirm('Bạn có chắc muốn xóa bài viết này?')">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>

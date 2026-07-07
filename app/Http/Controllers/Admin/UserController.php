@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User; // Bắt buộc import Model User ở đầu file
+use App\Http\Requests\Admin\UserRequest;
+use App\Models\User; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,47 +24,40 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Trả về file giao diện form thêm mới người dùng
         return view('admin.users.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request) // Khai báo lớp UserRequest tại đây
     {
-        // Validate dữ liệu - ĐÃ THÊM unique:users,phone ĐỂ CHỐNG TRÙNG SỐ ĐIỆN THOẠI
-        $request->validate([
-            'fullname' => 'required|max:100',
-            'username' => 'required|max:30|unique:users,username',
-            'email'    => 'required|email|max:50|unique:users,email',
-            'password' => 'required|min:6|max:150',
-            'phone'    => 'required|max:20|unique:users,phone', // Bẫy lỗi trùng số điện thoại tại đây
-        ], [
-            // Thêm thông báo tiếng Việt tùy chọn cho thân thiện
-            'phone.unique' => 'Số điện thoại này đã được đăng ký tài khoản khác!',
-            'username.unique' => 'Tên tài khoản này đã tồn tại!',
-            'email.unique' => 'Email này đã tồn tại!',
-        ]);
-
         try {
+            // ✨ ĐÃ XÓA bỏ đoạn $request->validate() thủ công vì dữ liệu đã tự check ở UserRequest
+            
             // Thêm mới tài khoản bằng Eloquent ORM
             User::create([
                 'fullname' => $request->fullname,
                 'username' => $request->username,
                 'email'    => $request->email,
-                'password' => $request->password, // Model tự động băm (hash) nhờ thuộc tính casts
+                'password' => $request->password, // Tự băm mật khẩu nhờ casts của Model
                 'phone'    => $request->phone,
                 'address'  => $request->address,
-                'gender'   => $request->gender ?? 0,   // Mặc định 0 (Ví dụ: Nam)
+                'gender'   => $request->gender ?? 0,   
                 'birthday' => $request->birthday,
-                'role'     => $request->role ?? 2,     // Mặc định 2
-                'status'   => $request->status ?? 1,   // Mặc định 1 (Kích hoạt)
+                'role'     => $request->role ?? 2,     
+                'status'   => $request->status ?? 1,   
             ]);
 
-            return redirect()->route('admin.users.index')->with('success', 'Thêm thành viên mới thành công!');
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Thêm thành viên mới thành công!');
+                
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 
@@ -90,25 +84,13 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $id) // Khai báo lớp UserRequest tại đây
     {
-        $user = User::find($id);
-        if (!$user) {
-            return redirect()->route('admin.users.index')->with('error', 'Thành viên không tồn tại!');
-        }
-
-        // Validate khi sửa: Loại trừ ID hiện tại để không tự trùng với chính mình (,phone,id,'.$id)
-        $request->validate([
-            'fullname' => 'required|max:100',
-            'email'    => 'required|email|max:50|unique:users,email,' . $id,
-            'phone'    => 'required|max:20|unique:users,phone,' . $id,
-            'password' => 'nullable|min:6|max:150', // Cho phép trống nếu không muốn đổi mật khẩu
-        ], [
-            'email.unique' => 'Email này đã bị tài khoản khác sử dụng!',
-            'phone.unique' => 'Số điện thoại này đã bị tài khoản khác sử dụng!',
-        ]);
-
         try {
+            $user = User::findOrFail($id);
+
+            // ✨ ĐÃ XÓA bỏ đoạn $request->validate() thủ công tại đây
+
             $dataUpdate = [
                 'fullname' => $request->fullname,
                 'email'    => $request->email,
@@ -120,16 +102,22 @@ class UserController extends Controller
                 'status'   => $request->status,
             ];
 
-            // Nếu người dùng nhập mật khẩu mới thì gán vào để cập nhật, để trống thì bỏ qua
+            // Nếu người dùng nhập mật khẩu mới thì cập nhật, để trống thì giữ nguyên
             if (!empty($request->password)) {
                 $dataUpdate['password'] = $request->password;
             }
 
             $user->update($dataUpdate);
 
-            return redirect()->route('admin.users.index')->with('success', 'Cập nhật thông tin thành viên thành công!');
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Cập nhật thông tin thành viên thành công!');
+                
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 
@@ -151,8 +139,11 @@ class UserController extends Controller
 
             $user->delete();
             return redirect()->route('admin.users.index')->with('success', 'Xóa thành viên thành công!');
+            
         } catch (\Exception $e) {
-            return redirect()->route('admin.users.index')->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 }

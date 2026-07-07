@@ -3,8 +3,9 @@
 @section('content')
 
 <div class="card">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">THÊM LOẠI SẢN PHẨM</h4>
+    <div class="border rounded bg-white p-4 shadow-sm">
+        <h3 class="mb-0">THÊM LOẠI SẢN PHẨM</h3>
+        <x-admin.alert />
         @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -68,7 +69,7 @@
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Lưu dữ liệu
+                    <i class="bi bi-save"></i> Thêm dữ liệu
                 </button>
                 <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
                     Quay lại

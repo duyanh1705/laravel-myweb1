@@ -5,6 +5,7 @@
 <div class="card">
     <div class="card-header bg-primary text-white">
         <h4 class="mb-0">THÊM THƯƠNG HIỆU MỚI</h4>
+        <x-admin.alert />
         @if ($errors->any())
         <div class="alert alert-danger mt-3 mb-0">
             <ul class="mb-0">
