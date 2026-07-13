@@ -5,25 +5,8 @@
     <h3 class="mb-4">Thêm sản phẩm</h3>
     
     <x-admin.alert />
-    @if ($errors->any())
-        <div class="alert alert-danger mb-4">
-            <h6 class="fw-bold"></h6>
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
-    <!-- Khối hiển thị thông báo lỗi hệ thống phát sinh từ khối catch -->
-    @if (session('error'))
-    <div class="alert alert-danger mb-4">
-        {{ session('error') }}
-    </div>
-    @endif
-
-    <form action="{{ route('admin.products.store') }}" method="POST">
+    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-md-6">
@@ -109,15 +92,11 @@
 
                     <input type="radio" class="btn-check" name="status" id="active" value="1"
                     {{ old('status', 1) == 1 ? 'checked' : ''}}>
-                    <label class="btn btn-outline-success" for="active">
-                        Hiển thị
-                    </label>
+                    <label class="btn btn-outline-success" for="active">Hiển thị</label>
 
                     <input type="radio" class="btn-check" name="status" id="inactive" value="0"
                     {{ old('status', 1) == 0 ? 'checked' : '' }}>
-                    <label class="btn btn-outline-danger" for="inactive">
-                        Ẩn
-                    </label>
+                    <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
                     @error('status')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -126,20 +105,42 @@
                 <!-- Mô tả sản phẩm -->
                 <div class="mb-3">
                     <label class="form-label font-weight-bold">Mô tả sản phẩm</label>
-                    <textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
+                    <textarea name="description" rows="4" class="form-control" placeholder="Nhập thông tin mô tả...">{{ old('description') }}</textarea>
                     @error('description')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- 🌟 THÊM 1: Khu vực Hình ảnh chính (Chọn 1 ảnh) -->
+                <div class="mb-3 img-group">
+                    <label class="form-label font-weight-bold">Hình ảnh chính</label>
+                    <input type="file" name="img" class="form-control img-input">
+                    <div class="img-preview mt-2"></div>
+                    @error('img')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- 🌟 THÊM 2: Khu vực Hình ảnh phụ (Chọn được nhiều ảnh cùng lúc) -->
+                <div class="mb-3 img-group">
+                    <label class="form-label font-weight-bold">Hình ảnh phụ</label>
+                    <input type="file" name="imgs[]" class="form-control img-input" multiple>
+                    <div class="img-preview mt-2"></div>
+                    @error('imgs')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
         </div>
         
-        <button type="submit" class="btn btn-primary">
-            Lưu
-        </button>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
-            Quay lại
-        </a>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Lưu dữ liệu
+            </button>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+                Quay lại
+            </a>
+        </div>
     </form>
 </div>
 @endsection

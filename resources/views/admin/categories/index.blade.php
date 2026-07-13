@@ -19,15 +19,23 @@
     <thead class="table-dark">
         <tr>
             <th>Mã loại</th>
+            <th>Hình ảnh</th>
             <th>Tên loại</th>
             <th>Slug</th>
             <th>Trạng thái</th>
-            <th width="15%">Thao tác</th> </tr>
+            <th>Thao tác</th>
+        </tr>
     </thead>
     <tbody>
         @foreach($list as $item)
         <tr>
             <td>{{ $item->cateid }}</td>
+            <td>
+                @if($item->image)
+                <img src="{{ asset('storage/categories/'.$item->image) }}" width="80"
+                class="img-thumbnail">
+                @endif
+            </td>
             <td>{{ $item->catename }}</td>
             <td>{{ $item->slug }}</td>
             <td>

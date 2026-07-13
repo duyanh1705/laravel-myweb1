@@ -66,6 +66,21 @@ class ProductRequest extends FormRequest
                 'string',
                 'regex:/^[^@!$^]+$/',
             ],
+            'img'=>[
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
+            'imgs'=>[
+                'nullable',
+                'array',
+            ],
+            'imgs.*'=>[
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
         ];
     }
 
@@ -86,6 +101,12 @@ class ProductRequest extends FormRequest
             'pricediscount.lt' => 'Giá khuyến mãi phải nhỏ hơn giá gốc sản phẩm.',
             'slug.regex'       => ':attribute chỉ được chứa chữ cái thường, số, dấu gạch dưới (_) và dấu gạch ngang (-).',
             'description.regex'=> ':attribute không được chứa các ký tự đặc biệt nguy hiểm như: @, !, $, ^',
+
+            'image'=>':attribute phải là hình ảnh.',
+            'mimes'=>':attribute chỉ chấp nhận các định dạng: jpg, jpeg, png, webp.',
+
+            'image.max'=>':attribute không được vượt quá 200 KB.',
+            'images.*.max'=>':attribute không được vượt quá 200 KB.',
         ];
     }
 

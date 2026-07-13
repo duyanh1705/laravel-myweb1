@@ -23,25 +23,24 @@
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">
             <tr>
-                <th>STT</th>
-                <th>Ảnh đại diện</th>
                 <th>Mã</th>
+                <th>Hình ảnh</th>
                 <th>Tên thương hiệu</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
-
             </tr>
         </thead>
         <tbody>
-            @foreach ($list as $index => $item)
+            @foreach ($list as $item)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>
-                        <img src="{{ $item->image ? asset('images/' . $item->image) : asset('images/default.png') }}"
-                            width="50" height="50" style="object-fit:cover">
-                    </td>
                     <td>{{ $item->id }}</td>
+                    <td>
+                        @if($item->image)
+                        <img src="{{ asset('storage/brands/'.$item->image) }}" width="80"
+                        class="img-thumbnail">
+                        @endif
+                    </td>
                     <td>{{ $item->brandname }}</td>
                     <td>{{ $item->slug }}</td>
                     <td>

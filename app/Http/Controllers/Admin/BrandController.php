@@ -7,6 +7,8 @@ use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class BrandController extends Controller
 {
@@ -37,11 +39,20 @@ class BrandController extends Controller
     public function store(BrandRequest $request)
     {
         try {
+            // upload hình ảnh (nếu có)
+            $fileName = null;
+            if($request->hasFile('img')){
+                $file =$request->file('img');
+                $fileName=Str::slug($request->brandname).'-'.time().'-'.$file->extension();
+                //hình ảnh lưu vào thư mục storage/app/public/brands
+                $file->storeAs('brands',$fileName,'public');
+            }
             Brand::create([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
                 'status'      => $request->status,
                 'description' => $request->description,
+                'image' => $fileName
             ]);
 
             return redirect()
@@ -87,12 +98,22 @@ class BrandController extends Controller
     {
         try {
             $brand = Brand::findOrFail($id);
+            $fileName = $brand->image;
+            if($request->hasFile('img')){
+                if($fileName){
+                    Storage::disk('public')->delete('brands/'.$brand->image);
+                }
+                $file=$request->file('img');
+                $fileName=Str::slug($request->brandname).'-'.time().'-'.$file->extension();
+                $file->storeAs('brands',$fileName,'public');
+            }
 
             $brand->update([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
                 'status'      => $request->status,
                 'description' => $request->description,
+                'image' =>$fileName,
             ]);
 
             return redirect()

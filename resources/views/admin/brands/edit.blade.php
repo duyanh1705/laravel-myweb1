@@ -3,9 +3,10 @@
 @section('content')
 
 <div class="card">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">SỬA THƯƠNG HIỆU</h4>
-        @if ($errors->any())
+    <div class="border rounded bg-white p-4 shadow-sm">
+        <h3 class="mb-4">CẬP NHẬT THƯƠNG HIỆU</h3>
+        <x-admin.alert />
+        {{-- @if ($errors->any())
         <div class="alert alert-danger mt-3 mb-0">
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
@@ -13,7 +14,7 @@
                 @endforeach
             </ul>
         </div>
-        @endif
+        @endif --}}
     </div>
     
     <div class="card-body">
@@ -23,7 +24,7 @@
         </div>
         @endif
 
-        <form action="{{ route('admin.brands.update', $brand->id) }}" method="POST">
+        <form action="{{ route('admin.brands.update', $brand->id) }}" method="POST" enctype="multipart/form-data">
             @csrf 
             @method('PUT')
 
@@ -48,10 +49,17 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="image" class="form-label font-weight-bold">Ảnh đại diện (Tên file)</label>
-                    <input type="text" name="image" id="image" class="form-control" 
-                        value="{{ old('image', $brand->image) }}" placeholder="logo.png">
+                <div class="mb-3 img-group">
+                    <label class="form-label">Hình ảnh</label>
+                    <input type="file" name ="img" class="form-control img-input" 
+                        value="{{ old('image', $brand->image) }}" placeholder="">
+                        <div class="img-preview mt-2">
+                            @if($brand->image)
+                            <img src="{{ asset('storage/brands/' .$brand->image) }}"
+                            alt="{{ $brand->name }}"
+                            width="150" class="img-thumbnail">
+                            @endif
+                        </div>
                     @error('image')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
