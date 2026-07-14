@@ -51,13 +51,12 @@
                 <div class="row">
                     <div class="col-md-6 mb-3 img-group">
                         <label class="form-label font-weight-bold">Hình ảnh</label>
-
                         <input type="file" name="img" class="form-control img-input">
-
 
                         <div class="img-preview mt-2"></div>
 
-                        @error('image')
+                        {{-- 🌟 ĐÃ SỬA: 'image' thành 'img' để đồng bộ với thuộc tính name="img" phía trên --}}
+                        @error('img')
                             <span class="text-danger small mt-1 d-block">{{ $message }}</span>
                         @enderror
                     </div>

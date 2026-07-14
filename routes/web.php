@@ -40,6 +40,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/forgotpass', [AuthController::class, 'forgotPassword'])->name('forgotpass');
     Route::post('/forgotpass', [AuthController::class, 'postforgotPassword'])->name('forgotpass.post');
 
+    // Khối route dành riêng cho Câu F: Quên mật khẩu
+    Route::get('/forgotpass', [AuthController::class, 'forgotPassword'])->name('forgotpass');
+    Route::post('/forgotpass', [AuthController::class, 'postforgotPassword'])->name('forgotpass.post');
+    
+    Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset-password');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.post');
+
     // 🔒 Các Route BẮT BUỘC PHẢI ĐĂNG NHẬP (Middleware Auth) theo đúng hình mẫu B.9
     Route::middleware('auth')->group(function () {
 

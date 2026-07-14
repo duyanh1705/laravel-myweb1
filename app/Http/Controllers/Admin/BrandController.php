@@ -42,27 +42,29 @@ class BrandController extends Controller
             // upload hình ảnh (nếu có)
             $fileName = null;
             if($request->hasFile('img')){
-                $file =$request->file('img');
-                $fileName=Str::slug($request->brandname).'-'.time().'-'.$file->extension();
-                //hình ảnh lưu vào thư mục storage/app/public/brands
-                $file->storeAs('brands',$fileName,'public');
+                $file = $request->file('img');
+                $fileName = Str::slug($request->brandname).'-'.time().'.'.$file->extension();
+                // hình ảnh lưu vào thư mục storage/app/public/brands
+                $file->storeAs('brands', $fileName, 'public');
             }
+
             Brand::create([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
                 'status'      => $request->status,
+                'sort_order'  => $request->sort_order ?? 0, // 🌟 Bổ sung lưu sort_order
                 'description' => $request->description,
-                'image' => $fileName
+                'image'       => $fileName
             ]);
 
             return redirect()
                 ->route('admin.brands.index')
-                ->with('success', 'Thêm thành công');
+                ->with('success', 'Thêm thương hiệu mới thành công');
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Lỗi thêm mới: ' . $e->getMessage());
         }
     }
 
@@ -99,21 +101,25 @@ class BrandController extends Controller
         try {
             $brand = Brand::findOrFail($id);
             $fileName = $brand->image;
+
             if($request->hasFile('img')){
-                if($fileName){
-                    Storage::disk('public')->delete('brands/'.$brand->image);
+                // Xóa ảnh cũ nếu tồn tại trên đĩa
+                if($fileName && Storage::disk('public')->exists('brands/'.$fileName)){
+                    Storage::disk('public')->delete('brands/'.$fileName);
                 }
-                $file=$request->file('img');
-                $fileName=Str::slug($request->brandname).'-'.time().'-'.$file->extension();
-                $file->storeAs('brands',$fileName,'public');
+                
+                $file = $request->file('img');
+                $fileName = Str::slug($request->brandname).'-'.time().'.'.$file->extension();
+                $file->storeAs('brands', $fileName, 'public');
             }
 
             $brand->update([
                 'brandname'   => $request->brandname,
                 'slug'        => $request->slug,
                 'status'      => $request->status,
+                'sort_order'  => $request->sort_order ?? 0, // 🌟 Bổ sung cập nhật sort_order
                 'description' => $request->description,
-                'image' =>$fileName,
+                'image'       => $fileName,
             ]);
 
             return redirect()
@@ -123,7 +129,7 @@ class BrandController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Lỗi cập nhật: ' . $e->getMessage());
         }
     }
 
@@ -138,6 +144,11 @@ class BrandController extends Controller
                 return redirect()
                     ->route('admin.brands.index')
                     ->with('error', 'Thương hiệu không tồn tại');
+            }
+
+            // Xóa ảnh cũ trên đĩa trước khi xóa bản ghi
+            if($brand->image && Storage::disk('public')->exists('brands/'.$brand->image)){
+                Storage::disk('public')->delete('brands/'.$brand->image);
             }
 
             $brand->delete();

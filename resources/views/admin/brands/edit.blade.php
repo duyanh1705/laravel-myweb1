@@ -2,11 +2,11 @@
 @section('title', 'Sửa thương hiệu')
 @section('content')
 
-<div class="card">
-    <div class="border rounded bg-white p-4 shadow-sm">
-        <h3 class="mb-4">CẬP NHẬT THƯƠNG HIỆU</h3>
-        <x-admin.alert />
-        {{-- @if ($errors->any())
+    <div class="card">
+        <div class="border rounded bg-white p-4 shadow-sm">
+            <h3 class="mb-4">CẬP NHẬT THƯƠNG HIỆU</h3>
+            <x-admin.alert />
+            {{-- @if ($errors->any())
         <div class="alert alert-danger mt-3 mb-0">
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
@@ -15,95 +15,101 @@
             </ul>
         </div>
         @endif --}}
-    </div>
-    
-    <div class="card-body">
-        @if (session('error'))
-        <div class="alert alert-danger mb-3">
-            {{ session('error') }}
         </div>
-        @endif
 
-        <form action="{{ route('admin.brands.update', $brand->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf 
-            @method('PUT')
+        <div class="card-body">
+            @if (session('error'))
+                <div class="alert alert-danger mb-3">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="brandname" class="form-label font-weight-bold">Tên thương hiệu</label>
-                    <input type="text" name="brandname" id="brandname" class="form-control" 
-                        value="{{ old('brandname', $brand->brandname) }}" placeholder="Nhập tên thương hiệu..." required>
-                    @error('brandname')
-                    <span class="text-danger">{{ $message }}</span>
-                    @enderror
+            <form action="{{ route('admin.brands.update', $brand->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="brandname" class="form-label font-weight-bold">Tên thương hiệu</label>
+                        <input type="text" name="brandname" id="brandname" class="form-control"
+                            value="{{ old('brandname', $brand->brandname) }}" placeholder="Nhập tên thương hiệu..."
+                            required>
+                        @error('brandname')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="slug" class="form-label font-weight-bold">Slug</label>
+                        <input type="text" name="slug" id="slug" class="form-control"
+                            value="{{ old('slug', $brand->slug) }}" placeholder="Ví dụ: samsung-galaxy..." required>
+                        @error('slug')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="slug" class="form-label font-weight-bold">Slug</label>
-                    <input type="text" name="slug" id="slug" class="form-control" 
-                        value="{{ old('slug', $brand->slug) }}" placeholder="Ví dụ: samsung-galaxy..." required>
-                    @error('slug')
-                    <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 img-group">
+                        <label class="form-label font-weight-bold">Hình ảnh</label>
 
-            <div class="row">
-                <div class="mb-3 img-group">
-                    <label class="form-label">Hình ảnh</label>
-                    <input type="file" name ="img" class="form-control img-input" 
-                        value="{{ old('image', $brand->image) }}" placeholder="">
+                        <!-- 🌟 ĐÃ SỬA: Thay đổi từ name="image" thành name="img" -->
+                        <input type="file" name="img" class="form-control img-input">
+
                         <div class="img-preview mt-2">
-                            @if($brand->image)
-                            <img src="{{ asset('storage/brands/' .$brand->image) }}"
-                            alt="{{ $brand->name }}"
-                            width="150" class="img-thumbnail">
+                            @if ($brand->image)
+                                <!-- Hiển thị ảnh cũ đang có -->
+                                <img src="{{ asset('storage/brands/' . $brand->image) }}" alt="{{ $brand->brandname }}"
+                                    width="150" class="img-thumbnail">
                             @endif
                         </div>
-                    @error('image')
-                    <span class="text-danger">{{ $message }}</span>
+
+                        <!-- 🌟 Giữ nguyên bắt lỗi validate 'img' trùng khớp -->
+                        @error('img')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="sort_order" class="form-label font-weight-bold">Thứ tự sắp xếp</label>
+                        <input type="number" name="sort_order" id="sort_order" class="form-control"
+                            value="{{ old('sort_order', $brand->sort_order) }}">
+                        @error('sort_order')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label font-weight-bold">Mô tả thương hiệu</label>
+                    <textarea name="description" id="description" rows="3" class="form-control" placeholder="Nhập mô tả chi tiết...">{{ old('description', $brand->description) }}</textarea>
+                    @error('description')
+                        <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="sort_order" class="form-label font-weight-bold">Thứ tự sắp xếp</label>
-                    <input type="number" name="sort_order" id="sort_order" class="form-control" 
-                        value="{{ old('sort_order', $brand->sort_order) }}">
-                    @error('sort_order')
-                    <span class="text-danger">{{ $message }}</span>
+                <div class="mb-3">
+                    <label class="form-label d-block font-weight-bold">Trạng thái</label>
+                    <input type="radio" class="btn-check" name="status" id="active" value="1"
+                        {{ old('status', $brand->status) == 1 ? 'checked' : '' }}>
+                    <label class="btn btn-outline-success" for="active">Hiển thị</label>
+
+                    <input type="radio" class="btn-check" name="status" id="inactive" value="0"
+                        {{ old('status', $brand->status) == 0 ? 'checked' : '' }}>
+                    <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
+                    @error('status')
+                        <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label font-weight-bold">Mô tả thương hiệu</label>
-                <textarea name="description" id="description" rows="3" class="form-control" placeholder="Nhập mô tả chi tiết...">{{ old('description', $brand->description) }}</textarea>
-                @error('description')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label d-block font-weight-bold">Trạng thái</label>
-                <input type="radio" class="btn-check" name="status" id="active" value="1" {{ old('status', $brand->status) == 1 ? 'checked' : ''}}>
-                <label class="btn btn-outline-success" for="active">Hiển thị</label>
-
-                <input type="radio" class="btn-check" name="status" id="inactive" value="0" {{ old('status', $brand->status) == 0 ? 'checked' : '' }}>
-                <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
-                @error('status')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Cập nhật dữ liệu
-                </button>
-                <a href="{{ route('admin.brands.index') }}" class="btn btn-secondary">
-                    Quay lại
-                </a>
-            </div>
-        </form>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Cập nhật dữ liệu
+                    </button>
+                    <a href="{{ route('admin.brands.index') }}" class="btn btn-secondary">
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 @endsection
