@@ -37,6 +37,8 @@ return new class extends Migration
             // 1: Hoạt động, 0: Khóa tài khoản
             $table->tinyInteger('status')->default(1);
 
+            $table->rememberToken();
+
             $table->timestamps();
         });
     }

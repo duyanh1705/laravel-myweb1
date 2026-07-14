@@ -1,6 +1,13 @@
+{{-- thừa kế layout/view admin.blade.php --}}
+{{-- resources/views/admin/layouts/admin.blade.php --}}
 @extends('admin.layouts.admin')
-@section('title', 'Trang Admin')
 
+{{-- Gán nội dung cho vùng section 'title'  --}}
+{{-- (tương ứng với @yield('title') trong layout --}}
+@section('title', 'Xin chào')
+
+{{-- Gán nội dung cho vùng section 'content'  --}}
+{{-- (tương ứng với @yield('content') trong layout --}}
 @section('content')
-<h1>Nguyen Duy Anh _ 2122110452</h1>
+    <h1>My Dashboard</h1>
 @endsection

@@ -4,9 +4,9 @@
         Admin
     </h4>
     <ul class="nav flex-column">
-        {{-- 1. Dashboard --}}
+        {{-- 1. Dashboard (ĐÃ SỬA LỖI TẠI ĐÂY) --}}
         <li class="nav-item">
-            <a class="nav-link text-white" href="{{ route('admin.home') }}">
+            <a class="nav-link text-white" href="{{ route('admin.dashboard') }}">
                 <i class="bi bi-house-door"></i>
                 Dashboard
             </a>
@@ -27,7 +27,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">
+                        <!-- Đã gắn thêm route tạo mới danh mục cho chuẩn bài -->
+                        <a class="nav-link text-white" href="{{ route('admin.categories.create') }}">
                             Thêm loại sản phẩm
                         </a>
                     </li>
@@ -53,7 +54,7 @@
             </a>
         </li>
 
-        {{-- 4. Quản lý Bài viết (Đặt ở vị trí này là chuẩn nhất) --}}
+        {{-- 4. Quản lý Bài viết --}}
         <li class="nav-item">
             <a class="nav-link text-white" href="{{ route('admin.posts.index') }}">
                 <i class="bi bi-journal-text"></i>
