@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
 
 // ==================== ROUTE PUBLIC & DEMO ====================
 Route::get('/', function () {
@@ -30,7 +33,25 @@ Route::controller(DemoController::class)->group(function () {
     Route::get('/demo6/{param1}/{param2}', 'index6');
 });
 
+// Định nghĩa trang chủ Client
+Route::get('/', [HomeController::class, 'index'])->name('home');
+// Trang chủ
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Câu D: Trang chi tiết sản phẩm theo slug
+Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('products.show');
+
+// Câu E: Lọc theo danh mục và thương hiệu
+Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
+Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
+
+// Câu F: Tìm kiếm sản phẩm
+Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
+
+// Câu G: Giỏ hàng sử dụng Session
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
 // ==================== HỆ THỐNG QUẢN TRỊ ADMIN ====================
 Route::prefix('admin')->name('admin.')->group(function () {
 

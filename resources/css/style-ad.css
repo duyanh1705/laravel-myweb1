@@ -1,0 +1,19 @@
+/* Custom CSS cho trang quản trị Admin */
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+/* Tùy chỉnh bo góc cho bảng và các nút bấm */
+.table img.img-thumbnail {
+    max-height: 80px;
+    object-fit: cover;
+}
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
