@@ -43,7 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Khối route dành riêng cho Câu F: Quên mật khẩu
     Route::get('/forgotpass', [AuthController::class, 'forgotPassword'])->name('forgotpass');
     Route::post('/forgotpass', [AuthController::class, 'postforgotPassword'])->name('forgotpass.post');
-    
+
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset-password');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.post');
 
@@ -57,11 +57,31 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // 3. Toàn bộ các Resource CRUD (Đã gom gọn, tự động sinh đầy đủ index, create, store, destroy...)
-        Route::resource('categories', CategoryController::class);
-        Route::resource('brands', BrandController::class);
-        Route::resource('users', UserController::class);
-        Route::resource('products', ProductController::class);
-        Route::resource('posts', PostController::class);
+        Route::middleware('roles:1')->group(
+            function () {
+                Route::get('trash/categories', [CategoryController::class, 'trash'])->name('categories.trash');
+                // Khôi phục
+                Route::patch('categories/{id}/restore', [CategoryController::class, 'restore'])
+                    ->name('categories.restore');
+                // Xóa vĩnh viễn
+                Route::delete('categories/{id}/forcedelete', [CategoryController::class, 'forceDelete'])
+                    ->name('categories.forceDelete');
+                // Route khôi phục tất cả danh mục trong thùng rác
+                Route::patch('categories/restore-all', [CategoryController::class, 'restoreAll'])
+                    ->name('categories.restoreAll');
+
+                // Route xóa vĩnh viễn tất cả danh mục trong thùng rác
+                Route::delete('categories/force-delete-all', [CategoryController::class, 'forceDeleteAll'])
+                    ->name('categories.forceDeleteAll');
+                Route::resource('categories', CategoryController::class);
+                Route::resource('brands', BrandController::class);
+                Route::resource('users', UserController::class);
+                Route::resource('products', ProductController::class);
+                Route::resource('posts', PostController::class);
+            }
+        );
+        Route::resource('products', ProductController::class)
+            ->only(['index'])->middleware('roles:1,2');
 
         // 🔒 Nằm bên trong Route::middleware('auth')->group(function () { ... })
 

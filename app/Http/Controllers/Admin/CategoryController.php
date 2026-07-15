@@ -21,8 +21,9 @@ class CategoryController extends Controller
         $list = Category::select('cateid', 'catename', 'slug', 'image', 'status', 'sort_order')
             ->orderBy('catename')
             ->paginate($limit);
+        $trashCount = Category::onlyTrashed()->count();
 
-        return view('admin.categories.index', compact('list'));
+        return view('admin.categories.index', compact('list', 'trashCount'));
     }
 
     /**
@@ -41,10 +42,10 @@ class CategoryController extends Controller
         try {
             // upload hình ảnh (nếu có)
             $fileName = null;
-            if($request->hasFile('img')){
+            if ($request->hasFile('img')) {
                 $file = $request->file('img');
                 // Tách phần tên theo slug của catename giống y như bên Brand
-                $fileName = Str::slug($request->catename).'-'.time().'.'.$file->extension();
+                $fileName = Str::slug($request->catename) . '-' . time() . '.' . $file->extension();
                 // hình ảnh lưu vào thư mục storage/app/public/categories đúng yêu cầu của Lab
                 $file->storeAs('categories', $fileName, 'public');
             }
@@ -69,6 +70,35 @@ class CategoryController extends Controller
         }
     }
 
+    // khôi phục dữ liệu đã xóa
+    public function restore($id)
+    {
+        try {
+            Category::onlyTrashed()->findOrFail($id)->restore();
+            return redirect()
+                ->route('admin.categories.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
+        }
+    }
+
+    // xóa vĩnh viễn
+    public function forceDelete($id)
+    {
+        try {
+            Category::onlyTrashed()->findOrFail($id)->forceDelete();
+            return redirect()
+                ->route('admin.categories.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
     /**
      * Display the specified resource.
      */
@@ -103,13 +133,13 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             $fileName = $category->image; // Giữ lại ảnh cũ nếu không chọn file mới
 
-            if($request->hasFile('img')){
+            if ($request->hasFile('img')) {
                 // Nếu đã có ảnh cũ, thực hiện xóa ảnh vật lý khỏi thư mục categories
-                if($fileName && Storage::disk('public')->exists('categories/'.$category->image)){
-                    Storage::disk('public')->delete('categories/'.$category->image);
+                if ($fileName && Storage::disk('public')->exists('categories/' . $category->image)) {
+                    Storage::disk('public')->delete('categories/' . $category->image);
                 }
                 $file = $request->file('img');
-                $fileName = Str::slug($request->catename).'-'.time().'.'.$file->extension();
+                $fileName = Str::slug($request->catename) . '-' . time() . '.' . $file->extension();
                 $file->storeAs('categories', $fileName, 'public');
             }
 
@@ -139,6 +169,7 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         try {
+            Category::findOrFail($id)->delete();
             $category = Category::find($id);
             if (!$category) {
                 return redirect()
@@ -147,12 +178,12 @@ class CategoryController extends Controller
             }
 
             // Xóa file ảnh vật lý của loại sản phẩm này khi xóa dữ liệu (nếu có)
-            if($category->image && Storage::disk('public')->exists('categories/'.$category->image)){
-                Storage::disk('public')->delete('categories/'.$category->image);
+            if ($category->image && Storage::disk('public')->exists('categories/' . $category->image)) {
+                Storage::disk('public')->delete('categories/' . $category->image);
             }
 
             $category->delete();
-            
+
             return redirect()
                 ->route('admin.categories.index')
                 ->with('success', 'Xóa loại sản phẩm thành công');
@@ -160,6 +191,43 @@ class CategoryController extends Controller
             return redirect()
                 ->route('admin.categories.index')
                 ->with('error', $e->getMessage());
+        }
+    }
+    // 🌟 THÊM HÀM NÀY VÀO TRONG CATEGORYCONTROLLER
+    public function trash($limit = 10)
+    {
+        // Lấy ra danh sách các loại sản phẩm ĐÃ BỊ XÓA MỀM (deleted_at khác NULL)
+        $list = Category::onlyTrashed()
+            ->orderByDesc('deleted_at')
+            ->paginate($limit);
+
+        // Trả về view thùng rác (bước sau tụi mình sẽ tạo file view này)
+        return view('admin.categories.trash', compact('list'));
+    }
+
+    // 🌟 Hàm khôi phục tất cả dữ liệu đã xóa
+    public function restoreAll()
+    {
+        try {
+            Category::onlyTrashed()->restore(); // Khôi phục hàng loạt
+            return redirect()
+                ->route('admin.categories.trash')
+                ->with('success', 'Đã khôi phục toàn bộ danh mục thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Thực hiện thất bại.');
+        }
+    }
+
+    // 🌟 Hàm xóa vĩnh viễn tất cả dữ liệu trong thùng rác
+    public function forceDeleteAll()
+    {
+        try {
+            Category::onlyTrashed()->forceDelete(); // Xóa sạch hoàn toàn khỏi DB
+            return redirect()
+                ->route('admin.categories.trash')
+                ->with('success', 'Đã dọn sạch thùng rác thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Thực hiện thất bại.');
         }
     }
 }
