@@ -8,44 +8,25 @@
     <!-- Nhúng Bootstrap 5 qua CDN nhanh gọn -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    @yield('styles')
 </head>
 
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- Header & Navbar đơn giản -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-uppercase" href="{{ route('home') }}">Nguyễn Duy Anh</a>
-
-            <!-- Cập nhật Form Tìm kiếm (Câu F) -->
-            <form action="{{ route('products.search') }}" method="GET" class="d-flex mx-auto w-50">[cite: 2]
-                <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm sản phẩm...">[cite: 2]
-                <button class="btn btn-outline-success" type="submit">Tìm</button>
-            </form>
-
-            <!-- Cập nhật Nút Giỏ hàng (Câu G) -->
-            <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
-                <i class="bi bi-cart3"></i> Giỏ hàng
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{ count(Session::get('cart', [])) }}
-                </span>
-            </a>
-        </div>
-    </nav>
+    <!-- 🌟 ĐÃ SỬA: Nhúng các thành phần giao diện từ thư mục partials -->
+    @include('client.partials.header')
+    @include('client.partials.navbar')
 
     <!-- Nội dung chính thay đổi theo từng trang -->
     <main class="container my-5">
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4 mt-auto">
-        <div class="container">
-            <p class="mb-0">© 2026 My Shop. Tất quyền được bảo lưu.</p>
-        </div>
-    </footer>
+    <!-- 🌟 ĐÃ SỬA: Nhúng chân trang -->
+    @include('client.partials.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 
 </html>

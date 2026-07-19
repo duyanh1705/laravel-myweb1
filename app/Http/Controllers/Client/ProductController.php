@@ -18,21 +18,25 @@ class ProductController extends Controller
     }
 
     // Câu E: Lọc theo Danh mục
+    // Hàm lọc theo Danh mục
     public function category($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
         $products = Product::where('cateid', $category->cateid)->paginate(8);
-        return view('client.product.index', compact('products', 'category'));
+
+        // 🌟 ĐÃ SỬA: Đổi từ 'client.product.index' thành 'client.product.category'
+        return view('client.product.category', compact('products', 'category'));
     }
 
-    // Câu E: Lọc theo Thương hiệu
+    // Hàm lọc theo Thương hiệu
     public function brand($slug)
     {
-        $brand = Brand::where('slug', $slug)->firstOrFail(); // Giả định bạn có Model Brand
+        $brand = Brand::where('slug', $slug)->firstOrFail();
         $products = Product::where('brandid', $brand->brandid)->paginate(8);
-        return view('client.product.index', compact('products', 'brand'));
-    }
 
+        // 🌟 ĐÃ SỬA: Đổi từ 'client.product.index' thành 'client.product.brand'
+        return view('client.product.brand', compact('products', 'brand'));
+    }
     // Câu F: Tìm kiếm
     public function search(Request $request)
     {

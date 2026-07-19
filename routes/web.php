@@ -52,6 +52,10 @@ Route::get('/search', [ClientProductController::class, 'search'])->name('product
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
+// Route sang trang điền thông tin thanh toán
+Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+// Route xử lý bấm nút đặt hàng để lưu DB
+Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process');
 // ==================== HỆ THỐNG QUẢN TRỊ ADMIN ====================
 Route::prefix('admin')->name('admin.')->group(function () {
 
