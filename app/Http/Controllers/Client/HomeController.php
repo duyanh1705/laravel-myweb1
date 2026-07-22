@@ -8,14 +8,23 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+public function index()
     {
-        // Khu vực 1: Hiển thị 8 sản phẩm mới nhất
+        // 8 Sản phẩm mới nhất
         $newProducts = Product::where('status', 1)
-            ->latest()
+            ->select('id', 'productname', 'price', 'pricediscount', 'image', 'status', 'slug')
+            ->orderByDesc('created_at')
             ->take(8)
             ->get();
 
-        return view('client.home.index', compact('newProducts'));
+        // 8 Sản phẩm giảm giá
+        $saleProducts = Product::where('status', 1)
+            ->select('id', 'productname', 'price', 'pricediscount', 'image', 'status', 'slug')
+            ->where('pricediscount', '>', 0)
+            ->orderByDesc('created_at')
+            ->take(8)
+            ->get();
+
+        return view('client.home', compact('newProducts', 'saleProducts'));
     }
 }

@@ -1,32 +1,31 @@
 @extends('client.layouts.app')
 
-@section('title', isset($category) ? $category->catename : $brand->brandname)
+{{-- Lấy tên thương hiệu từ sản phẩm đầu tiên hoặc hiển thị mặc định --}}
+@section('title', $products->first()?->brandname ?? 'Thương hiệu sản phẩm')
 
 @section('content')
-    <div class="my-4">
-        <!-- Hiển thị tiêu đề động tùy thuộc vào việc click vào Danh mục hay Thương hiệu -->
-        <h3 class="mb-4 text-uppercase fw-bold text-primary border-bottom pb-2">
-            📂 @if(isset($category))
-                Danh mục: {{ $category->catename }}
-               @else
-                Thương hiệu: {{ $brand->brandname ?? 'Chính hãng' }}
-               @endif
-        </h3>
+<div class="container py-4">
+    <h3 class="mb-4 fw-bold">
+        Thương hiệu: <span class="text-primary">{{ $products->first()?->brandname ?? 'Sản phẩm' }}</span>
+    </h3>
 
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            @forelse ($products as $product)
-                <!-- Sử dụng lại Component product-card đã viết ở Câu C để không lặp code -->
-                <x-client.product-card :product="$product" />
-            @empty
-                <div class="col-12 text-center py-5 text-muted">
-                    Hiện chưa có sản phẩm nào thuộc mục này.
+    @if ($products->count() > 0)
+        <div class="row g-4">
+            @foreach ($products as $product)
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <x-client.product :product="$product" />
                 </div>
-            @endforelse
+            @endforeach
         </div>
 
-        <!-- Thanh phân trang (Bootstrap 5) hiển thị nếu có nhiều dữ liệu -->
+        {{-- Phân trang Bootstrap 5 --}}
         <div class="mt-4 d-flex justify-content-center">
-            {{ $products->links('vendor.pagination.bootstrap-5') }}
+            {{ $products->links() }}
         </div>
-    </div>
+    @else
+        <div class="alert alert-warning text-center">
+            Chưa có sản phẩm nào thuộc thương hiệu này!
+        </div>
+    @endif
+</div>
 @endsection

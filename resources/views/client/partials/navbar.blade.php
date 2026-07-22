@@ -1,8 +1,67 @@
-<!-- Bạn có thể chèn các link Danh mục hoặc Thương hiệu của Câu E vào đây nếu muốn -->
-<div class="bg-secondary text-white py-2 shadow-sm border-top border-secondary-subtle">
-    <div class="container d-flex gap-3">
-        <span class="fw-bold">⚡ Menu:</span>
-        <a href="{{ route('home') }}" class="text-white text-decoration-none hover-link">Trang chủ</a>
-        <!-- Cô giáo chấm điểm cấu trúc sẽ đánh giá rất cao phần tách biệt này -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        {{-- Logo --}}
+        <a class="navbar-brand fw-bold text-primary" href="{{ route('home') }}">
+            Mini Shop
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            {{-- Menu --}}
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ route('home') }}">Trang chủ</a>
+                </li>
+
+                {{-- Dropdown Danh mục (Câu C) --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Danh mục
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach ($categories as $item)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('products.category', $item->slug) }}">
+                                    {{ $item->catename }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+
+                {{-- Dropdown Thương hiệu (Câu C) --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Thương hiệu
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach ($brands as $item)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('products.brand', $item->slug) }}">
+                                    {{ $item->brandname }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+            </ul>
+
+            {{-- Tìm kiếm (Câu F & H) --}}
+            <form action="{{ route('products.search') }}" method="GET" class="d-flex me-3">
+                <input class="form-control me-2" type="search" name="q" value="{{ request('q') }}" placeholder="Tìm sản phẩm...">
+                <button class="btn btn-outline-primary" type="submit">Tìm</button>
+            </form>
+
+            {{-- Giỏ hàng --}}
+            <a href="{{ route('cart.index') }}" class="btn btn-outline-success position-relative">
+                <i class="bi bi-cart3"></i> Giỏ hàng
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ count(Session::get('cart', [])) }}
+                </span>
+            </a>
+        </div>
     </div>
-</div>
+</nav>
