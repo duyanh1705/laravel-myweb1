@@ -38,7 +38,8 @@
 
                 {{-- Nút Thêm vào giỏ hàng (Gắn form POST 'cart.add') --}}
                 <div class="col-6">
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST"
+                        class="form-add-cart">
                         @csrf
                         <button type="submit" class="btn btn-success w-100">
                             <i class="bi bi-cart-plus"></i>

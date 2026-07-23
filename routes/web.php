@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Import Controller phía Client
 use App\Http\Controllers\Client\HomeController;
@@ -17,29 +18,30 @@ use App\Http\Controllers\Client\CartController;
 
 /*
 |--------------------------------------------------------------------------
-| 1. HỆ THỐNG TRANG CLIENT (LAB 14-A)
+| 1. HỆ THỐNG TRANG CLIENT (LAB 14-A & 14-B)
 |--------------------------------------------------------------------------
 */
 
-// Câu B: Trang chủ Client[cite: 2]
+// Trang chủ Client
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Câu D: Trang chi tiết sản phẩm theo slug (Tên route chuẩn: product.show)[cite: 2]
+// Trang chi tiết sản phẩm
 Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('product.show');
 
-// Câu E & F: Lọc theo danh mục và thương hiệu[cite: 2]
+// Lọc theo danh mục và thương hiệu
 Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
 Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
 
-// Câu G & H: Tìm kiếm sản phẩm[cite: 2]
+// Tìm kiếm sản phẩm
 Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
 
-// Giỏ hàng & Đặt hàng (Checkout)[cite: 2]
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
-Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process');
+// Giỏ hàng & Đặt hàng (Checkout)
+Route::prefix('cart')->controller(CartController::class)->name('cart.')->group(function () {
+    Route::get('/show', 'show')->name('show');
+    Route::post('/add/{id}', 'addToCart')->name('add');
+    Route::delete('/remove/{id}', 'removeCart')->name('remove');
+    Route::post('/checkout', 'checkout')->name('checkout');
+});
 
 
 /*
@@ -63,10 +65,15 @@ Route::controller(DemoController::class)->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| 3. HỆ THỐNG QUẢN TRỊ ADMIN
+| 3. HỆ THỐNG QUẢN TRỊ ADMIN (LAB 14-B)
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
+
+    // 🌟 ROUTE XỬ LÝ KHI TRUY CẬP TRỰC TIẾP /admin -> Chuyển sang /admin/orders
+    Route::get('/', function () {
+        return redirect()->route('admin.orders.index');
+    });
 
     // 🔓 Các Route KHÔNG CẦN đăng nhập (Guest)
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -75,6 +82,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/forgotpass', [AuthController::class, 'postforgotPassword'])->name('forgotpass.post');
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset-password');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.post');
+
+    // 🌟 QUẢN LÝ ĐƠN HÀNG (LAB 14-B - CÂU J)
+    Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
+    Route::patch('orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
     // 🔒 Các Route BẮT BUỘC PHẢI ĐĂNG NHẬP (Middleware Auth)
     Route::middleware('auth')->group(function () {

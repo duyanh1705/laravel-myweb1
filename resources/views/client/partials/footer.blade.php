@@ -17,7 +17,7 @@
                     <li class="mb-1"><a href="{{ route('home') }}" class="text-white text-decoration-none">Trang chủ</a>
                     </li>
                     <li class="mb-1"><a href="#" class="text-white text-decoration-none">Sản phẩm</a></li>
-                    <li class="mb-1"><a href="{{ route('cart.index') }}" class="text-white text-decoration-none">Giỏ
+                    <li class="mb-1"><a href="{{ route('cart.show') }}" class="text-white text-decoration-none">Giỏ
                             hàng</a></li>
                     <li class="mb-1"><a href="#" class="text-white text-decoration-none">Liên hệ</a></li>
                 </ul>

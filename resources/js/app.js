@@ -1,6 +1,9 @@
 import './bootstrap';
 // Import thư viện Bootstrap từ node_modules
-import 'bootstrap';
+import 'bootstrap'
 // Import file JavaScript tự viết
 /* . : thư mục hiện tại (resources/js) */
 import './preview-image';
+
+// // import cart
+// import './cart';

@@ -51,16 +51,18 @@
 
             {{-- Tìm kiếm (Câu F & H) --}}
             <form action="{{ route('products.search') }}" method="GET" class="d-flex me-3">
-                <input class="form-control me-2" type="search" name="q" value="{{ request('q') }}" placeholder="Tìm sản phẩm...">
+                <input class="form-control me-2" type="search" name="q" value="{{ request('q') }}"
+                    placeholder="Tìm sản phẩm...">
                 <button class="btn btn-outline-primary" type="submit">Tìm</button>
             </form>
 
             {{-- Giỏ hàng --}}
-            <a href="{{ route('cart.index') }}" class="btn btn-outline-success position-relative">
-                <i class="bi bi-cart3"></i> Giỏ hàng
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{ count(Session::get('cart', [])) }}
+            <a href="{{ route('cart.show') }}" class="btn btn-outline-success">
+                <i class="bi bi-cart3"></i> Giỏ hàng (
+                <span class="badge bg-warning text-dark" id="cart-count">
+                    {{ collect(session('cart', []))->sum('quantity') }}
                 </span>
+                )
             </a>
         </div>
     </div>
